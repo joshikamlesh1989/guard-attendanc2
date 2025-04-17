@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guard Attendance</title>
+</head>
+<body>
+    <h2>Guard Attendance</h2>
+    
+    <form id="attendance-form">
+        <label for="guard-name">Guard Name:</label>
+        <select id="guard-name" name="guard-name">
+            <option value="">--Select--</option>
+            <option value="Santosh Yasne">Santosh Yasne</option>
+            <option value="Mahendra Lilarey">Mahendra Lilarey</option>
+            <option value="Sanjay Bedi">Sanjay Bedi</option>
+            <option value="Jivanlal Birenwar">Jivanlal Birenwar</option>
+            <option value="Krishna Kohle">Krishna Kohle</option>
+            <option value="Yarne Kaka">Yarne Kaka</option>
+            <option value="Mahendra Bhoyar">Mahendra Bhoyar</option>
+            <option value="Laxmichand Uke">Laxmichand Uke</option>
+            <option value="Nitin Meshram">Nitin Meshram</option>
+            <option value="Vankat Mohan Mali">Vankat Mohan Mali</option>
+            <option value="Dilip Thakre">Dilip Thakre</option>
+            <option value="Vikram Uke">Vikram Uke</option>
+            <option value="Nandkishor Gutam">Nandkishor Gutam</option>
+        </select><br><br>
+
+        <label>Take Photo:</label><br>
+        <video id="video" width="320" height="240" autoplay></video><br><br>
+        <button type="button" onclick="takePhoto()">Capture Photo</button><br><br>
+        
+        <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
+        <img id="photo-preview" alt="Photo preview" style="display:none;" width="320" height="240"/><br><br>
+        
+        <label>Location:</label>
+        <input type="text" id="location" name="location" readonly/><br><br>
+        
+        <button type="submit">Submit Attendance</button>
+    </form>
+
+    <script>
+        // Accessing the video and canvas elements
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const photoPreview = document.getElementById('photo-preview');
+
+        // Start video stream
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+            })
+            .catch(err => {
+                console.error("Error accessing webcam: ", err);
+            });
+
+        // Capture photo from the video stream
+        function takePhoto() {
+            const context = canvas.getContext('2d');
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const photoData = canvas.toDataURL('image/png');
+            photoPreview.src = photoData;
+            photoPreview.style.display = 'block';
+        }
+
+        // Get geolocation of the user
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
+                document.getElementById('location').value = Latitude: ${latitude}, Longitude: ${longitude};
+            }, function(error) {
+                console.error("Error fetching location: ", error);
+            });
+        } else {
+            console.error("Geolocation is not supported by this browser.");
+        }
+
+        // Form submission (you can modify this to send data to a server)
+        document.getElementById('attendance-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            alert('Attendance submitted successfully!');
+            // Here you would typically send the form data to the server
+        });
+    </script>
+</body>
+</html>
